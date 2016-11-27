@@ -1,0 +1,38 @@
+version: "2"
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ORDERING_INTERVAL: 10
+      RABBIT_INIT_TIMEOUT: 5
+      BROKER_URL: "amqp://guest:guest@rabbitmq:5672/"
+      HOST_IP: "application"
+    ports:
+      - "5000:5000"
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile_test
+    environment:
+      ORDERING_INTERVAL: 10
+      RABBIT_INIT_TIMEOUT: 5
+      BROKER_URL: "amqp://guest:guest@rabbitmq:5672/"
+  shop:
+    image: "pillopl/shop:latest"
+    depends_on:
+      - "rabbitmq"
+    environment:
+      event_duplication: "false"
+  shipping:
+    image: "pillopl/shipping:latest"
+    depends_on:
+      - "rabbitmq"
+    environment:
+      ignore_commands: "false"
