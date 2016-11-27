@@ -9,3 +9,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_producer
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile_consumer
