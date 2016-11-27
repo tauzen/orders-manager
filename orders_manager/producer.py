@@ -8,7 +8,7 @@ connection = BrokerConnection(settings.BROKER_URL)
 with producers[connection].acquire(block=True) as producer:
     producer.publish(
         {"test": "test"},
-        serializer="pickle",
+        serializer="json",
         exchange=order_manager_ex,
         declare=[order_manager_ex],
         routing_key="shipments"
