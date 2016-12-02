@@ -1,57 +1,30 @@
-from collections import OrderedDict
-from kombu import Connection
-from kombu.mixins import ConsumerProducerMixin
+from arrow import Arrow
+from uuid import uuid4, UUID
 
-from orders_manager import settings
-from orders_manager.queues import (
-    exchange_commands,
-    queue_items,
-    queue_shipments,
-)
+from orders_manager.messages import CreateShipment
+from orders_manager.order_shipment_channel import OrderShipmentChannel
 
 
-class OrdersManager(ConsumerProducerMixin):
+class Ordering:
 
-    def __init__(self, connection):
-        self.connection = connection
+    def __init__(self, order_shipment_channel: OrderShipmentChannel) -> None:
+        self.order_shipment_channel = order_shipment_channel
+        self.pending_orders = {}
 
-        self.pendingOrders = OrderedDict()
+    def add_pending_shipment(self, uuid: UUID, when: Arrow) -> None:
+        self.pending_orders[uuid] = when
+        print("Added pending shipment {}".format(uuid))
 
-    def get_consumers(self, Consumer, channel):
-        return [
-            Consumer(
-                queue_shipments,
-                accept=['json'],
-                callbacks=[self.handle_shipments_event]
-            ),
-            Consumer(
-                queue_items,
-                accept=['json'],
-                callbacks=[self.handle_items_event]
+    def get_state(self) -> dict:
+        return self.pending_orders
+
+    def shipment_ordered(self, ordered_item_uuid: UUID) -> None:
+        del self.pending_orders[ordered_item_uuid]
+        print("Shipment marked as ordered {}".format(ordered_item_uuid))
+
+    # should be called by celery beat
+    def order_pending(self) -> None:
+        for uuid in self.pending_orders.keys():
+            self.order_shipment_channel.ship(
+                CreateShipment(uuid4(), Arrow.now(), 'DHL', uuid)
             )
-        ]
-
-    def handle_shipments_event(self, body, message):
-        message.ack()
-
-        # shipment.ordered
-        del self.pendingOrders[body["orderedItemUUID"]]
-        print(self.pendingOrders)
-
-    def handle_items_event(self, body, message):
-        message.ack()
-
-        # item.paid
-        self.pendingOrders[body["uuid"]] = body["when"]
-        print(self.pendingOrders)
-
-    def publish_command(self, body):
-        self.producer.publish(
-            body,
-            exchange=exchange_commands,
-            declare=[exchange_commands],
-        )
-
-print("Connecting")
-with Connection(settings.BROKER_URL) as connection:
-    OrdersManager(connection).run()
