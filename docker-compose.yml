@@ -5,11 +5,7 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-  producer:
+  app:
     build:
       context: .
-      dockerfile: Dockerfile_producer
-  consumer:
-    build:
-      context: .
-      dockerfile: Dockerfile_consumer
+      dockerfile: Dockerfile
