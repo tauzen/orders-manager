@@ -15,13 +15,13 @@ ordering_subscriber = OrderingSubscriber(Connection(settings.BROKER_URL))
 
 item_paid_handler = create_item_paid_handler(ordering)
 ordering_subscriber.register_handler(
-    MessageTypes.item_paid.value,
+    MessageTypes.item_paid,
     item_paid_handler
 )
 
 shipment_created_handler = create_shipment_created_handler(ordering)
 ordering_subscriber.register_handler(
-    MessageTypes.shipment_created.value,
+    MessageTypes.shipment_created,
     shipment_created_handler
 )
 

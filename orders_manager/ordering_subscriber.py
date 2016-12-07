@@ -3,7 +3,12 @@ from kombu import Exchange, Queue
 from kombu.mixins import ConsumerMixin
 
 from orders_manager import settings
-from orders_manager.messages import MessageTypes, ShipmentCreated, ItemPaid
+from orders_manager.messages import (
+    ItemPaid,
+    MessageTypes,
+    messages_parser,
+    ShipmentCreated,
+)
 
 
 class OrderingSubscriber(ConsumerMixin):
@@ -37,18 +42,18 @@ class OrderingSubscriber(ConsumerMixin):
         message.ack()
         print("Message received - body {}".format(body))
 
-        event = json.loads(body)
+        event = json.loads(body, object_hook=messages_parser)
         handler = self.handlers.get(event.get("type"))
         if not handler:
             print("Handler for type {} not available".format(event.get("type")))
             return
 
-        if event["type"] == MessageTypes.shipment_created.value:
+        if event["type"] == MessageTypes.shipment_created:
             return handler(ShipmentCreated(**event))
-        elif event["type"] == MessageTypes.item_paid.value:
+        elif event["type"] == MessageTypes.item_paid:
             return handler(ItemPaid(**event))
 
     def register_handler(self, event_type, handler):
         assert event_type, handler
-        assert event_type in [e.value for e in MessageTypes]
+        assert event_type in [e for e in MessageTypes]
         self.handlers[event_type] = handler

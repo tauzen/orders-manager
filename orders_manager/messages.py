@@ -1,9 +1,8 @@
+import arrow
 from enum import Enum
 from json import JSONEncoder
 from typing import NamedTuple
 from uuid import UUID
-
-from arrow import Arrow
 
 
 class MessageTypes(Enum):
@@ -16,7 +15,7 @@ CreateShipment = NamedTuple(
     'CreateShipment', [
         ('type', MessageTypes),
         ('shipmentUUID', UUID),
-        ('when', Arrow),
+        ('when', arrow.Arrow),
         ('supplier', str),
         ('orderedItemUuid', UUID),
     ],
@@ -27,7 +26,7 @@ ShipmentCreated = NamedTuple(
         ('type', MessageTypes),
         ('shipmentUUID', UUID),
         ('orderedItemUuid', UUID),
-        ('when', Arrow),
+        ('when', arrow.Arrow),
     ],
 )
 
@@ -35,7 +34,7 @@ ItemPaid = NamedTuple(
     'ItemPaid', [
         ('type', MessageTypes),
         ('uuid', UUID),
-        ('when', Arrow),
+        ('when', arrow.Arrow),
     ]
 )
 
@@ -45,10 +44,21 @@ class MessageEncoder(JSONEncoder):
         if isinstance(obj, UUID):
             return obj.hex
 
-        if isinstance(obj, Arrow):
+        if isinstance(obj, arrow.Arrow):
             return str(obj)
 
         if isinstance(obj, MessageTypes):
             return obj.value
 
         return JSONEncoder.default(self, obj)
+
+
+def messages_parser(obj: dict) -> dict:
+    for key, value in obj.items():
+        if "uuid" in key.lower():
+            obj[key] = UUID(value)
+        elif key == "when":
+            obj[key] = arrow.get(value)
+        elif key == "type":
+            obj[key] = MessageTypes(value)
+    return obj
