@@ -1,14 +1,14 @@
 from arrow import Arrow
 from uuid import uuid4, UUID
 
-from orders_manager.messages import CreateShipment
-from orders_manager.order_shipment_channel import OrderShipmentChannel
+from orders_manager.messages import CreateShipment, MessageTypes
+from orders_manager.ordering_publisher import OrderingPublisher
 
 
 class Ordering:
 
-    def __init__(self, order_shipment_channel: OrderShipmentChannel) -> None:
-        self.order_shipment_channel = order_shipment_channel
+    def __init__(self, ordering_publisher: OrderingPublisher) -> None:
+        self.ordering_publisher = ordering_publisher
         self.pending_orders = {}
 
     def add_pending_shipment(self, uuid: UUID, when: Arrow) -> None:
@@ -25,6 +25,12 @@ class Ordering:
     # should be called by celery beat
     def order_pending(self) -> None:
         for uuid in self.pending_orders.keys():
-            self.order_shipment_channel.ship(
-                CreateShipment(uuid4(), Arrow.now(), 'DHL', uuid)
+            self.ordering_publisher.ship(
+                CreateShipment(
+                    MessageTypes.create_shipment,
+                    uuid4(),
+                    Arrow.now(),
+                    'DHL',
+                    uuid
+                )
             )

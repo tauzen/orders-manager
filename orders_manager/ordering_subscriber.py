@@ -10,17 +10,16 @@ class OrderingSubscriber(ConsumerMixin):
     def __init__(self, connection):
         self.connection = connection
 
-        exchange = Exchange(settings.ORDER_MANGER_EXCHANGE_NAME, type="topic")
         self.shipments_queue = Queue(
             settings.SHIPMENTS_QUEUE_NAME,
-            exchange,
-            routing_key=settings.SHIPMENTS_ROUTING_KEY
+            Exchange(settings.SHIPMENTS_EXCHANGE),
+            routing_key=settings.SHIPMENTS_QUEUE_NAME
         )
 
         self.items_queue = Queue(
             settings.ITEMS_QUEUE_NAME,
-            exchange,
-            routing_key=settings.ITEMS_ROUTING_KEY
+            Exchange(settings.ITEMS_EXCHANGE),
+            routing_key=settings.ITEMS_QUEUE_NAME
         )
 
         self.handlers = {}

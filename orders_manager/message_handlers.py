@@ -1,7 +1,7 @@
 from types import FunctionType
 
-from orders_manager.ordering import Ordering
 from orders_manager.messages import ShipmentCreated, ItemPaid
+from orders_manager.ordering import Ordering
 
 
 def create_shipment_created_handler(ordering: Ordering) -> FunctionType:

@@ -1,16 +1,13 @@
 import os
 
-BROKER_URL = os.environ.get("BROKER_URL", "amqp://guest:guest@rabbitmq:5672/")
+BROKER_URL = os.environ.get("BROKER_URL", "amqp://guest:guest@docker_ip:5672/")
 
-ORDER_MANGER_EXCHANGE_NAME = "order-manager"
+SHIPMENTS_EXCHANGE = "shipments"
+SHIPMENTS_QUEUE_NAME = "shipments.orders"
 
-SHIPMENTS_QUEUE_NAME = "shipments"
-SHIPMENTS_ROUTING_KEY = "shipments"
-
-ITEMS_QUEUE_NAME = "items"
-ITEMS_ROUTING_KEY = "items"
+ITEMS_EXCHANGE = "items"
+ITEMS_QUEUE_NAME = "items.orders"
 
 COMMANDS_EXCHANGE_NAME = "commands"
-COMMANDS_EXCHANGE_TYPE = "topic"
 
 RABBIT_SLEEP = int(os.environ.get("RABBIT_SLEEP", 0))

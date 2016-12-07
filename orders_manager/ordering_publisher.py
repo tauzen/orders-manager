@@ -6,11 +6,11 @@ from orders_manager import settings
 from orders_manager.messages import CreateShipment, MessageEncoder
 
 
-class OrderShipmentChannel:
+class OrderingPublisher:
     def __init__(self) -> None:
         self.exchange = Exchange(
             settings.COMMANDS_EXCHANGE_NAME,
-            settings.COMMANDS_EXCHANGE_TYPE
+            "topic"
         )
 
     def ship(self, command: CreateShipment) -> None:
