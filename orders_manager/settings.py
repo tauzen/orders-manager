@@ -12,3 +12,5 @@ ITEMS_ROUTING_KEY = "items"
 
 COMMANDS_EXCHANGE_NAME = "commands"
 COMMANDS_EXCHANGE_TYPE = "topic"
+
+RABBIT_SLEEP = int(os.environ.get("RABBIT_SLEEP", 0))

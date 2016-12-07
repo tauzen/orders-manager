@@ -25,7 +25,7 @@ ShipmentCreated = NamedTuple(
     'ShipmentCreated', [
         ('type', MessageTypes),
         ('shipmentUUID', UUID),
-        ('orderedItemUUID', UUID),
+        ('orderedItemUuid', UUID),
         ('when', Arrow),
     ],
 )

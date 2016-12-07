@@ -5,7 +5,10 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-  app:
+  application:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      RABBIT_SLEEP: 5
+      BROKER_URL: "amqp://guest:guest@rabbitmq:5672/"

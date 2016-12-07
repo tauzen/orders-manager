@@ -7,7 +7,7 @@ from orders_manager.messages import ShipmentCreated, ItemPaid
 def create_shipment_created_handler(ordering: Ordering) -> FunctionType:
     def handler(message: ShipmentCreated) -> None:
         print("Received shipment created event {}".format(message))
-        ordering.shipment_ordered(message.orderedItemUUID)
+        ordering.shipment_ordered(message.orderedItemUuid)
 
     return handler
 

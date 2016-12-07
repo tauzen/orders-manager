@@ -30,27 +30,26 @@ class OrderingSubscriber(ConsumerMixin):
             Consumer(
                 [self.shipments_queue, self.items_queue],
                 accept=['json'],
-                callback=[self.handle_message]
+                callbacks=[self.handle_message]
             )
         ]
 
     def handle_message(self, body, message):
         message.ack()
         print("Message received - body {}".format(body))
-        print("Message received - message {}".format(message))
 
         event = json.loads(body)
-        handler = self.handlers.get(event["type"])
+        handler = self.handlers.get(event.get("type"))
         if not handler:
-            print("Handler for type {} not available".format(event["type"]))
+            print("Handler for type {} not available".format(event.get("type")))
             return
 
-        if event["type"] == MessageTypes.shipment_created:
+        if event["type"] == MessageTypes.shipment_created.value:
             return handler(ShipmentCreated(**event))
-        elif event["type"] == MessageTypes.item_paid:
+        elif event["type"] == MessageTypes.item_paid.value:
             return handler(ItemPaid(**event))
 
     def register_handler(self, event_type, handler):
         assert event_type, handler
-        assert event_type in [e for e in MessageTypes]
+        assert event_type in [e.value for e in MessageTypes]
         self.handlers[event_type] = handler

@@ -1,7 +1,7 @@
 from kombu import Connection
 
 from orders_manager import settings
-from orders_manager.handlers import (
+from orders_manager.message_handlers import (
     create_item_paid_handler,
     create_shipment_created_handler,
 )
@@ -17,12 +17,18 @@ item_paid_handler = create_item_paid_handler(ordering)
 shipment_created_handler = create_shipment_created_handler(ordering)
 
 ordering_subscriber.register_handler(
-    MessageTypes.shipment_created,
+    MessageTypes.shipment_created.value,
     shipment_created_handler
 )
 ordering_subscriber.register_handler(
-    MessageTypes.item_paid,
+    MessageTypes.item_paid.value,
     item_paid_handler
 )
 
+if settings.RABBIT_SLEEP:
+    print("Sleeping ... {}s".format(settings.RABBIT_SLEEP))
+    from time import sleep
+    sleep(settings.RABBIT_SLEEP)
+
+print("Connection to rabbitmq")
 ordering_subscriber.run()
