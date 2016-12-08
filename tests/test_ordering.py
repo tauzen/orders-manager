@@ -3,6 +3,7 @@ from uuid import uuid4, UUID
 from unittest import mock
 
 from orders_manager.ordering import Ordering
+from orders_manager.messages import CreateShipment, MessageTypes
 
 
 def test_add_pending_shipment_adds_pending_order():
@@ -39,3 +40,11 @@ def test_shipment_ordered():
 
 def test_order_pending():
     uuid1, uuid2 = uuid4(), uuid4()
+
+    ordering = Ordering(mock.Mock())
+    ordering.pending_orders[uuid1] = Arrow.now()
+    ordering.pending_orders[uuid2] = Arrow.now()
+
+    ordering.order_pending()
+
+    assert ordering.ordering_publisher.ship.call_count == 2
