@@ -1,1 +1,4 @@
-Work in progress
+```
+$ docker-compose build
+$ docker-compose up
+```
