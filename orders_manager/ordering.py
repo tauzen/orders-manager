@@ -24,6 +24,7 @@ class Ordering:
 
     # should be called by celery beat
     def order_pending(self) -> None:
+        print("Ordering pending items if present")
         for uuid in self.pending_orders.keys():
             self.ordering_publisher.ship(
                 CreateShipment(
