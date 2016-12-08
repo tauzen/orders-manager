@@ -15,11 +15,11 @@ class OrderingPublisher:
 
     def ship(self, command: CreateShipment) -> None:
         print("Creating shipment {}".format(command))
-        connection = Connection(settings.BROKER_URL)
-        with producers[connection].acquire(block=True) as producer:
-            producer.publish(
-                json.dumps(command, cls=MessageEncoder),
-                serializer="json",
-                exchange=self.exchange,
-                declare=[self.exchange]
-            )
+        with Connection(settings.BROKER_URL) as connection:
+            with producers[connection].acquire(block=True) as producer:
+                producer.publish(
+                    json.dumps(command, cls=MessageEncoder),
+                    serializer="json",
+                    exchange=self.exchange,
+                    declare=[self.exchange]
+                )
