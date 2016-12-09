@@ -17,13 +17,13 @@ class OrderingSubscriber(ConsumerMixin):
 
         self.shipments_queue = Queue(
             settings.SHIPMENTS_QUEUE_NAME,
-            Exchange(settings.SHIPMENTS_EXCHANGE),
+            Exchange(settings.SHIPMENTS_EXCHANGE, type="topic"),
             routing_key=settings.SHIPMENTS_QUEUE_NAME
         )
 
         self.items_queue = Queue(
             settings.ITEMS_QUEUE_NAME,
-            Exchange(settings.ITEMS_EXCHANGE),
+            Exchange(settings.ITEMS_EXCHANGE, type="topic"),
             routing_key=settings.ITEMS_QUEUE_NAME
         )
 

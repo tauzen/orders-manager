@@ -18,7 +18,7 @@ class OrderingPublisher:
         with Connection(settings.BROKER_URL) as connection:
             with producers[connection].acquire(block=True) as producer:
                 producer.publish(
-                    json.dumps(command, cls=MessageEncoder),
+                    json.dumps(command._asdict(), cls=MessageEncoder),
                     serializer="json",
                     exchange=self.exchange,
                     declare=[self.exchange]
