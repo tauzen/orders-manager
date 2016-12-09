@@ -10,5 +10,14 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      RABBIT_SLEEP: 5
+      ORDERING_INTERVAL: 10
+      RABBIT_INIT_TIMEOUT: 5
+      BROKER_URL: "amqp://guest:guest@rabbitmq:5672/"
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile_test
+    environment:
+      ORDERING_INTERVAL: 10
+      RABBIT_INIT_TIMEOUT: 5
       BROKER_URL: "amqp://guest:guest@rabbitmq:5672/"

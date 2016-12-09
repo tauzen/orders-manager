@@ -36,10 +36,10 @@ ordering_subscriber.register_handler(
     shipment_created_handler
 )
 
-if settings.RABBIT_SLEEP:
-    print("Waiting for rabbitmq ... {}s".format(settings.RABBIT_SLEEP))
+if settings.RABBIT_INIT_TIMEOUT:
+    print("Waiting for rabbitmq ... {}s".format(settings.RABBIT_INIT_TIMEOUT))
     from time import sleep
-    sleep(settings.RABBIT_SLEEP)
+    sleep(settings.RABBIT_INIT_TIMEOUT)
 
 print("Scheduling periodic ordering")
 schedule_order_pending(ordering)

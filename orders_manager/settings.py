@@ -10,5 +10,5 @@ ITEMS_QUEUE_NAME = "items.orders"
 
 COMMANDS_EXCHANGE_NAME = "commands"
 
-RABBIT_SLEEP = int(os.environ.get("RABBIT_SLEEP", 0))
+RABBIT_INIT_TIMEOUT = int(os.environ.get("RABBIT_INIT_TIMEOUT", 0))
 ORDERING_INTERVAL = int(os.environ.get("ORDERING_INTERVAL", 10))
