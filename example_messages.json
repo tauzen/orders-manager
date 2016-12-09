@@ -1,0 +1,20 @@
+[
+  {
+    "type": "shipment.order",
+    "shipmentUUID": "3eccd1b0c2594c97842df854ff3cdf5d",
+    "when": "2016-12-03T13:22:24.132437+01:00",
+    "supplier": "DHL",
+    "orderedItemUuid": "bfca9eb194964c49ad75d7a45da3961b"
+  },
+  {
+    "type": "shipment.ordered",
+    "shipmentUUID": "3eccd1b0c2594c97842df854ff3cdf5d",
+    "orderedItemUuid": "bfca9eb194964c49ad75d7a45da3961b",
+    "when": "2016-12-03T13:26:51.235203+01:00"
+  },
+  {
+    "type": "item.paid",
+    "uuid": "bfca9eb194964c49ad75d7a45da3961b",
+    "when": "2016-12-03T13:20:24.132437+01:00"
+  }
+]
