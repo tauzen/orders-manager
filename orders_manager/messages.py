@@ -60,5 +60,8 @@ def messages_parser(obj: dict) -> dict:
         elif key == "when":
             obj[key] = arrow.get(value)
         elif key == "type":
-            obj[key] = MessageTypes(value)
+            try:
+                obj[key] = MessageTypes(value)
+            except ValueError:
+                obj[key] = value
     return obj
