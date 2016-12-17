@@ -44,7 +44,7 @@ class OrderingSubscriber(ConsumerMixin):
         event = messages_parser(body)
         handler = self.handlers.get(event.get("type"))
         if not handler:
-            print("Handler for type {} not available".format(event.get("type")))
+            print("Handler for type {} not found".format(event.get("type")))
             return
 
         if event["type"] == MessageTypes.shipment_created:

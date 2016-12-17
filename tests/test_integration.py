@@ -34,7 +34,12 @@ def publish_message(msg, exchange_name, routing_key):
 def get_message_from_commands_exchange():
     with Connection(settings.BROKER_URL) as conn:
         ex = Exchange("commands", type="topic")
-        q = Queue("commands", exchange=ex, routing_key="#", channel=conn.channel())
+        q = Queue(
+            "commands",
+            exchange=ex,
+            routing_key="#",
+            channel=conn.channel()
+        )
         q.declare()
         msg = q.get(no_ack=True)
         return msg.decode() if msg else None

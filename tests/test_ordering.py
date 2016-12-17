@@ -3,7 +3,6 @@ from uuid import uuid4, UUID
 from unittest import mock
 
 from orders_manager.ordering import Ordering
-from orders_manager.messages import CreateShipment, MessageTypes
 
 
 def test_add_pending_shipment_adds_pending_order():

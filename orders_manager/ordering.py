@@ -1,5 +1,5 @@
-from arrow import Arrow
 from uuid import uuid4, UUID
+from arrow import Arrow
 
 from orders_manager.messages import CreateShipment, MessageTypes
 from orders_manager.ordering_publisher import OrderingPublisher
@@ -25,7 +25,7 @@ class Ordering:
     # should be called by celery beat
     def order_pending(self) -> None:
         print("Ordering pending items if present")
-        for uuid in self.pending_orders.keys():
+        for uuid in self.pending_orders:
             self.ordering_publisher.ship(
                 CreateShipment(
                     MessageTypes.create_shipment,

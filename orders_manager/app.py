@@ -1,7 +1,7 @@
 import json
+from threading import Timer, Thread
 from flask import Flask
 from kombu import Connection
-from threading import Timer, Thread
 
 from orders_manager import settings
 from orders_manager.messages import MessageTypes, MessageEncoder
@@ -21,6 +21,7 @@ def schedule_order_pending(ordering: Ordering) -> None:
         schedule_order_pending,
         (ordering,)
     ).start()
+
 
 ordering = Ordering(OrderingPublisher())
 ordering_subscriber = OrderingSubscriber(Connection(settings.BROKER_URL))
@@ -47,12 +48,13 @@ print("Scheduling periodic ordering")
 schedule_order_pending(ordering)
 
 print("Connecting to {} and listening for msgs".format(settings.BROKER_URL))
-Thread(target=lambda: ordering_subscriber.run()).start()
+Thread(target=ordering_subscriber.run).start()
 
 
 @ordering_status.route('/')
 def get():
     return json.dumps(ordering.get_state(), cls=MessageEncoder)
+
 
 print("Starting Flask webserver")
 ordering_status.run(host=settings.HOST_IP)

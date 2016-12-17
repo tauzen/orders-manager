@@ -1,8 +1,8 @@
-import arrow
 from enum import Enum
 from json import JSONEncoder
 from typing import NamedTuple
 from uuid import UUID
+import arrow
 
 
 class MessageTypes(Enum):
