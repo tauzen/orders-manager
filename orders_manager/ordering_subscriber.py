@@ -42,7 +42,7 @@ class OrderingSubscriber(ConsumerMixin):
         message.ack()
         print("Message received - body {}".format(body))
 
-        event = json.loads(body, object_hook=messages_parser)
+        event = messages_parser(body)
         handler = self.handlers.get(event.get("type"))
         if not handler:
             print("Handler for type {} not available".format(event.get("type")))

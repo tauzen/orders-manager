@@ -25,7 +25,7 @@ def publish_message(msg, exchange_name, routing_key):
         with producers[connection].acquire(block=True) as producer:
             producer.publish(
                 json.dumps(msg),
-                serializer="json",
+                content_type="application/json",
                 exchange=Exchange(exchange_name, type="topic"),
                 routing_key=routing_key
             )
@@ -37,7 +37,7 @@ def get_message_from_commands_exchange():
         q = Queue("commands", exchange=ex, routing_key="#", channel=conn.channel())
         q.declare()
         msg = q.get(no_ack=True)
-        return json.loads(msg.decode()) if msg else None
+        return msg.decode() if msg else None
 
 
 def test_end_2_end_scenario():

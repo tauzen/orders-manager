@@ -19,7 +19,7 @@ class OrderingPublisher:
             with producers[connection].acquire(block=True) as producer:
                 producer.publish(
                     json.dumps(command._asdict(), cls=MessageEncoder),
-                    serializer="json",
+                    content_type="application/json",
                     exchange=self.exchange,
                     declare=[self.exchange]
                 )
