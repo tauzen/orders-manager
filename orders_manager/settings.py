@@ -1,6 +1,7 @@
 import os
 
 BROKER_URL = os.environ.get("BROKER_URL", "amqp://guest:guest@docker_ip:5672/")
+HOST_IP = os.environ.get("HOST_IP", "127.0.0.1")
 
 SHIPMENTS_EXCHANGE = "shipments"
 SHIPMENTS_QUEUE_NAME = "shipments.orders"

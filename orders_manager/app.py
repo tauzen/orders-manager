@@ -55,4 +55,4 @@ def get():
     return json.dumps(ordering.get_state(), cls=MessageEncoder)
 
 print("Starting Flask webserver")
-ordering_status.run()
+ordering_status.run(host=settings.HOST_IP)
