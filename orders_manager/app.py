@@ -1,8 +1,10 @@
+import json
+from flask import Flask
 from kombu import Connection
-from threading import Timer
+from threading import Timer, Thread
 
 from orders_manager import settings
-from orders_manager.messages import MessageTypes
+from orders_manager.messages import MessageTypes, MessageEncoder
 from orders_manager.message_handlers import (
     create_shipment_created_handler,
     create_item_paid_handler,
@@ -20,9 +22,9 @@ def schedule_order_pending(ordering: Ordering) -> None:
         (ordering,)
     ).start()
 
-
 ordering = Ordering(OrderingPublisher())
 ordering_subscriber = OrderingSubscriber(Connection(settings.BROKER_URL))
+ordering_status = Flask(__name__)
 
 item_paid_handler = create_item_paid_handler(ordering)
 ordering_subscriber.register_handler(
@@ -44,5 +46,13 @@ if settings.RABBIT_INIT_TIMEOUT:
 print("Scheduling periodic ordering")
 schedule_order_pending(ordering)
 
-print("Connecting to rabbitmq {}".format(settings.BROKER_URL))
-ordering_subscriber.run()
+print("Connecting to {} and listening for msgs".format(settings.BROKER_URL))
+Thread(target=lambda: ordering_subscriber.run()).start()
+
+
+@ordering_status.route('/')
+def get():
+    return json.dumps(ordering.get_state(), cls=MessageEncoder)
+
+print("Starting Flask webserver")
+ordering_status.run()

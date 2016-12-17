@@ -12,14 +12,14 @@ class Ordering:
         self.pending_orders = {}
 
     def add_pending_shipment(self, uuid: UUID, when: Arrow) -> None:
-        self.pending_orders[uuid] = when
+        self.pending_orders[uuid.hex] = when
         print("Added pending shipment {}".format(uuid))
 
     def get_state(self) -> dict:
         return self.pending_orders
 
     def shipment_ordered(self, ordered_item_uuid: UUID) -> None:
-        del self.pending_orders[ordered_item_uuid]
+        del self.pending_orders[ordered_item_uuid.hex]
         print("Shipment marked as ordered {}".format(ordered_item_uuid))
 
     # should be called by celery beat

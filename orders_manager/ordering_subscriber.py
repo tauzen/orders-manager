@@ -1,4 +1,3 @@
-import json
 from kombu import Exchange, Queue
 from kombu.mixins import ConsumerMixin
 

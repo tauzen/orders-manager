@@ -13,7 +13,7 @@ def test_add_pending_shipment_adds_pending_order():
 
     ordering.add_pending_shipment(uuid, now)
 
-    assert ordering.pending_orders[uuid] == now
+    assert ordering.pending_orders[uuid.hex] == now
 
 
 def test_add_pending_shipment_one_order_per_uuid():
@@ -25,13 +25,13 @@ def test_add_pending_shipment_one_order_per_uuid():
     ordering.add_pending_shipment(uuid_2, Arrow.now())
 
     assert len(ordering.pending_orders) == 1
-    assert ordering.pending_orders[uuid_1]
+    assert ordering.pending_orders[uuid_1.hex]
 
 
 def test_shipment_ordered():
     uuid = uuid4()
     ordering = Ordering(mock.Mock())
-    ordering.pending_orders[uuid] = Arrow.now()
+    ordering.pending_orders[uuid.hex] = Arrow.now()
 
     ordering.shipment_ordered(uuid)
 
