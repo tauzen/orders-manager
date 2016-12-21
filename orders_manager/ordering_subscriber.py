@@ -3,10 +3,8 @@ from kombu.mixins import ConsumerMixin
 
 from orders_manager import settings
 from orders_manager.messages import (
-    ItemPaid,
     MessageTypes,
     messages_parser,
-    ShipmentCreated,
 )
 
 
@@ -49,7 +47,7 @@ class OrderingSubscriber(ConsumerMixin):
         handler, cls = self.handlers[event["type"]]
         return handler(cls(**event))
 
-    def register_handler(self, event_type, handler, cls):
+    def register_handler(self, event_type, cls, handler):
         assert event_type, handler
         assert event_type in [e for e in MessageTypes]
         self.handlers[event_type] = (handler, cls)
