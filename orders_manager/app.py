@@ -4,7 +4,12 @@ from flask import Flask
 from kombu import Connection
 
 from orders_manager import settings
-from orders_manager.messages import MessageTypes, MessageEncoder
+from orders_manager.messages import (
+    MessageTypes,
+    MessageEncoder,
+    ItemPaid,
+    ShipmentCreated,
+)
 from orders_manager.message_handlers import (
     create_shipment_created_handler,
     create_item_paid_handler,
@@ -30,13 +35,15 @@ ordering_status = Flask(__name__)
 item_paid_handler = create_item_paid_handler(ordering)
 ordering_subscriber.register_handler(
     MessageTypes.item_paid,
-    item_paid_handler
+    item_paid_handler,
+    ItemPaid
 )
 
 shipment_created_handler = create_shipment_created_handler(ordering)
 ordering_subscriber.register_handler(
     MessageTypes.shipment_created,
-    shipment_created_handler
+    shipment_created_handler,
+    ShipmentCreated
 )
 
 if settings.RABBIT_INIT_TIMEOUT:

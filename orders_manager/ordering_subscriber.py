@@ -42,17 +42,14 @@ class OrderingSubscriber(ConsumerMixin):
         print("Message received - body {}".format(body))
 
         event = messages_parser(body)
-        handler = self.handlers.get(event.get("type"))
-        if not handler:
+        if event.get("type") not in self.handlers:
             print("Handler for type {} not found".format(event.get("type")))
             return
 
-        if event["type"] == MessageTypes.shipment_created:
-            return handler(ShipmentCreated(**event))
-        elif event["type"] == MessageTypes.item_paid:
-            return handler(ItemPaid(**event))
+        handler, cls = self.handlers[event["type"]]
+        return handler(cls(**event))
 
-    def register_handler(self, event_type, handler):
+    def register_handler(self, event_type, handler, cls):
         assert event_type, handler
         assert event_type in [e for e in MessageTypes]
-        self.handlers[event_type] = handler
+        self.handlers[event_type] = (handler, cls)
