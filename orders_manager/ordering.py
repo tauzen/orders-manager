@@ -22,7 +22,6 @@ class Ordering:
         del self.pending_orders[ordered_item_uuid.hex]
         print("Shipment marked as ordered {}".format(ordered_item_uuid))
 
-    # should be called by celery beat
     def order_pending(self) -> None:
         print("Ordering pending items if present")
         for uuid in self.pending_orders:
